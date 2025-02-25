@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Namen</title>
+    <title>Personal-Daten</title>
     <script>
-        async function fetchNames() {
-            const response = await fetch('/get_names'); // API-Call zu Flask
+        async function fetchPersonal() {
+            const response = await fetch('/get_personal'); // API-Call zu Flask
             const data = await response.json();  // JSON-Daten abrufen
 
-            const listContainer = document.getElementById("name-list");
+            const listContainer = document.getElementById("personal-list");
             listContainer.innerHTML = "";  // Vorherige Einträge löschen
 
             data.forEach(item => {
                 const listItem = document.createElement("li");
-                listItem.textContent = item.Name;  // Nur den Namen anzeigen
+                listItem.textContent = `${item.Name} - ${item.Position}`;  // Name + Position
                 listContainer.appendChild(listItem);
             });
         }
 
-        window.onload = fetchNames;  // Automatischer Aufruf beim Laden
+        window.onload = fetchPersonal;  // Automatischer Aufruf beim Laden
     </script>
 </head>
 <body>
-    <h1>Liste der Namen aus der Datenbank</h1>
-    <ul id="name-list"></ul>
+    <h1>Personal-Liste</h1>
+    <ul id="personal-list"></ul>
 </body>
 </html>

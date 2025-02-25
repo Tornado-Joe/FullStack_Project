@@ -1,28 +1,33 @@
-import os
 from flask import Flask, jsonify, render_template
 from supabase import create_client, Client
+import os
+from dotenv import load_dotenv  # NEU: Lädt Umgebungsvariablen aus .env
+
+# .env-Datei laden
+load_dotenv()
 
 app = Flask(__name__, static_folder='', template_folder='')
 
-# Supabase Zugangsdaten
-SUPABASE_URL = 'https://xrjwfmgowboaorbvkbdp.supabase.co'
-SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyandmbWdvd2JvYW9yYnZrYmRwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MDQyNDcwMiwiZXhwIjoyMDU2MDAwNzAyfQ.i6m1JqWHlm09j-da4tSlJfTeS0fzvOhLIFUKP4CY2hQ'
+# Supabase Zugangsdaten aus der .env-Datei holen
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+# Verbindung zur Supabase-Datenbank
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/get_names', methods=['GET'])
-def get_names():
+@app.route('/get_personal', methods=['GET'])
+def get_personal():
     try:
-        result = supabase.table('Personal').select('Name').execute()
-        print(result)  # Debugging: Zeigt das Ergebnis in der Konsole
-        data = result.data
-        return jsonify(data)
+        result = supabase.table('Personal').select('Name, Position').execute()
+        data = result.data  # Extrahierte Daten aus Supabase
+        print("Daten aus Supabase:", data)  # Debugging
+        return jsonify(data)  # JSON an das Frontend zurückgeben
     except Exception as e:
-        print("Fehler:", e)  # Zeigt die genaue Fehlerursache
+        print("Fehler:", e)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
