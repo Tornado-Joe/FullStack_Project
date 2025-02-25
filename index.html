@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Namen</title>
+    <script>
+        async function fetchNames() {
+            const response = await fetch('/get_names'); // API-Call zu Flask
+            const data = await response.json();  // JSON-Daten abrufen
+
+            const listContainer = document.getElementById("name-list");
+            listContainer.innerHTML = "";  // Vorherige Einträge löschen
+
+            data.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.textContent = item.Name;  // Nur den Namen anzeigen
+                listContainer.appendChild(listItem);
+            });
+        }
+
+        window.onload = fetchNames;  // Automatischer Aufruf beim Laden
+    </script>
+</head>
+<body>
+    <h1>Liste der Namen aus der Datenbank</h1>
+    <ul id="name-list"></ul>
+</body>
+</html>
